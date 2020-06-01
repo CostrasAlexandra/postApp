@@ -1,0 +1,62 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <div class="card-header " style="display: flex">
+        {% block card_header %} {% endblock card_header %}
+        <form class="form-inline" method="POST">
+            <div class="form-group  mb-2">
+                <select id = "country"  name = "country" class="form-control" >
+                    <option>Country</option>
+                    {% for country in countries %}
+                        <option value="{{ country }}"> {{ country }} </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group  mx-sm-3 mb-2">
+                <select  id="prediction"  name="prediction" class="form-control " >
+                    <option>Prediction</option>
+                    {% for prediction in predictions %}
+                        <option value="{{ prediction }}"> {{ prediction }} </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group mb-2">
+                <select id="year" name="year" class="form-control ">
+                    <option>Year</option>
+                    {% for year in years %}
+                        <option value="{{ year }}"> {{ year }} </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group mx-sm-3 mb-2">
+                <select id="sort_by" name="sort_by" class="form-control ">
+                    <option value="Year">Sort by Year</option>
+                    <option value="Country">Sort by Country</option>
+                </select>
+            </div>
+                <button type="submit" name="filter" value="filter" class="btn btn-secondary mb-2">GO</button>
+        </form>
+
+    </div>
+    <div class="container py-5">
+
+
+        <div class="row pb-5 mb-4">
+
+            {% for classfication_result in classification_results %}
+                <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
+                    <!-- Card-->
+                    <div class="card border-light mb-3" style="max-width: 18rem;">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ classfication_result.year_and_country_to_string() }}</h5>
+                            <p class="card-text">Result: {{ classfication_result.get_prediction() }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+
+        </div>
+
+
+    </div>
+{% endblock content %}

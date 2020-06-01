@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/css/bootstrap-select.css"/>
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='cssFiles/layout.css') }}">
+    <script src="static/javaScriptFiles/layout.js"></script>
+
+    {% block head %} {% endblock %}
+
+    {% if title %}
+        <title> Post - {{ title }}</title>
+    {% else %}
+        <title> Post </title>
+    {% endif %}
+</head>
+
+<body>
+
+<div class="vertical-nav bg-white" id="sidebar">
+    <div class="py-4 px-3 mb-4 bg-light">
+        <div class="media d-flex align-items-center">
+            <div class="media-body">
+                <h4 class="m-0">LePostBusiness</h4>
+                <p class="font-weight-light text-muted mb-0">To start a postal business or not</p>
+            </div>
+        </div>
+    </div>
+
+    <p class="text-gray font-weight-bold text-uppercase px-3 small pb-4 mb-0">Main</p>
+
+    <ul class="nav flex-column bg-white mb-0">
+        <li class="nav-item">
+            <a href="#" class="nav-link text-dark font-italic bg-light">
+                <i class="fa fa-th-large mr-3 text-primary fa-fw"></i>
+                Home
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="/about" class="nav-link text-dark font-italic">
+                <i class="fa fa-address-card mr-3 text-primary fa-fw"></i>
+                About
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="/results" class="nav-link text-dark font-italic">
+                <i class="fa fa-cubes mr-3 text-primary fa-fw"></i>
+                Some of our results
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="#" class="nav-link text-dark font-italic">
+                <i class="fa fa-envelope mr-3 text-primary fa-fw"></i>
+                Try with your data
+            </a>
+        </li>
+    </ul>
+
+    <p class="text-gray font-weight-bold text-uppercase px-3 small py-4 mb-0">Charts</p>
+
+    <ul class="nav flex-column bg-white mb-0">
+        <li class="nav-item">
+            <a href="#" class="nav-link text-dark font-italic">
+                <i class="fa fa-area-chart mr-3 text-primary fa-fw"></i>
+                Area charts
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="#" class="nav-link text-dark font-italic">
+                <i class="fa fa-bar-chart mr-3 text-primary fa-fw"></i>
+                Bar charts
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="#" class="nav-link text-dark font-italic">
+                <i class="fa fa-pie-chart mr-3 text-primary fa-fw"></i>
+                Pie charts
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="#" class="nav-link text-dark font-italic">
+                <i class="fa fa-line-chart mr-3 text-primary fa-fw"></i>
+                Line charts
+            </a>
+        </li>
+    </ul>
+</div>
+<!-- End vertical navbar -->
+
+
+<!-- Page content holder -->
+<div class="page-content p-5" id="content">
+    <!-- Toggle button -->
+    <button id="sidebarCollapse" type="button" class="btn btn-light bg-white rounded-pill shadow-sm px-4 mb-4"><i
+            class="fa fa-bars mr-2"></i><small class="text-uppercase font-weight-bold">Menu</small></button>
+    <div class="card">
+        {% block content %} {% endblock %}
+    </div>
+</div>
+
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+      <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.7.3/js/bootstrap-select.min.js"></script>
+
+</body>
+</html>
