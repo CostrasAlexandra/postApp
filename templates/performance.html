@@ -1,0 +1,133 @@
+{% extends "layout.html" %}
+{% block content %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='cssFiles/performance.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+    <!-- pie chart canvas element -->
+    <div class="card">
+        <div class="card-header">
+            <a>Performance</a>
+
+        </div>
+        <div class="container">
+            <div class="card-body row pb-5 mb-4" style="display: flex; align-self:center">
+
+                <div class="col">
+                    <canvas class="chart chart-base" id="expected" width="500" height="300"></canvas>
+                </div>
+                <div class="col">
+                    <canvas class="chart chart-base" id="generated" width="500" height="300"></canvas>
+                </div>
+                <div class="col">
+                    <canvas class="chart chart-base spacing" id="bar_chart" width="500" height="300"></canvas>
+                </div>
+                <div class="col spacing">
+                    <div class="card" style="width: inherit">
+                        <div class="card-body container">
+                            <div class="row container">
+                                <i class="fa fa-line-chart fa-4x col " aria-hidden="true"
+                                   style="float: left; color:darkgray"></i>
+                                <p class="col text-gray font-weight-bold text-uppercase px-3 h4 py-4 mb-0"
+                                   style="float: right;     bottom: 11px;">Accuracy</p>
+                            </div>
+                            <div class="progress row" style="float: bottom">
+                                <div class="progress-bar" role="progressbar" style="width: {{ accuracy }}%;"
+                                     aria-valuenow="{{ accuracy }}"
+                                     aria-valuemin="0" aria-valuemax="100">{{ accuracy }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <canvas id="line-chart" width="500" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+    <script>
+        new Chart(document.getElementById("generated"), {
+            type: 'doughnut',
+            data: {
+                labels: [{% for item in predictions %}
+                    "{{item}}",
+                {% endfor %}],
+                datasets: [
+                    {
+                        label: "Generated",
+                        backgroundColor: ["#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850"],
+                        data: {{ predictions_numbers }}
+                    }
+                ]
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: 'Generated data'
+                }
+            }
+        });
+        new Chart(document.getElementById("expected"), {
+            type: 'doughnut',
+            data: {
+                labels: [{% for item in predictions %}
+                    "{{item}}",
+                {% endfor %}],
+                datasets: [
+                    {
+                        label: "Expected",
+                        backgroundColor: ["#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850"],
+                        data: {{ expected_numbers }}
+                    }
+                ]
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: 'Expected data'
+                }
+            }
+        });
+        new Chart(document.getElementById("bar_chart"), {
+            type: 'bar',
+            data: {
+                labels: [{% for item in predictions %}
+                    "{{item}}",
+                {% endfor %}],
+                datasets: [
+                    {
+                        label: "Expected",
+                        backgroundColor: "#3e95cd",
+                        data: {{ expected_numbers }}
+                    }, {
+                        label: "Generated",
+                        backgroundColor: "#8e5ea2",
+                        data: {{ predictions_numbers }}
+                    }
+                ]
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: 'Expected vs Generated'
+                }
+            }
+        });
+
+        new Chart(document.getElementById("line-chart"), {
+            type: 'line',
+            data: {
+                labels: [1,2,3,4,5],
+                datasets: [{
+                    data: {{ stability_statistics }},
+                    label: "Accuracy",
+                    borderColor: "#3e95cd",
+                    fill: false
+                }]
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: 'Stability'
+                }
+            }
+        });
+    </script>
+{% endblock content %}

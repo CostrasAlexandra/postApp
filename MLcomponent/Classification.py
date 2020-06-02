@@ -1,5 +1,5 @@
 from pandas import read_excel
-from sklearn.metrics import classification_report
+from sklearn.metrics import classification_report, accuracy_score
 from sklearn.model_selection import train_test_split
 from sklearn.neural_network import MLPClassifier
 from sklearn.preprocessing import MinMaxScaler
@@ -24,10 +24,12 @@ class Classification:
     rescaledX_test = any
     rescaledY_test = any
     prediction = any
+    copy_Y_test = []
 
     def __init__(self, data):
         self.data = data
         self.__mlp = any
+        self.__statistics = []
 
     def resample_data(self):
         data_0 = self.data[self.data.Clasification == 0]
@@ -53,6 +55,7 @@ class Classification:
 
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(X, y, test_size=0.30)
         self.copy_X_test = self.X_test.copy();
+        self.copy_Y_test = self.y_test.copy();
 
         del self.X_test['Year']
         del self.X_train['Year']
@@ -80,14 +83,18 @@ class Classification:
         self.resample_data()
         self.separate_data()
         self.prepare_data()
+        self.find_stability_statistics()
         self.ann()
         self.test_ann()
 
     def get_results(self):
         return self.results
 
-    def report(self):
-        return classification_report(str(self.y_test), self.predictions, str(zero_division=1))
+    def get_report(self):
+        return classification_report(self.y_test, self.predictions, zero_division=1)
+
+    def get_accuracy(self):
+        return accuracy_score(self.y_test, self.predictions)
 
     def predict(self, list_of_data):
         x_input = list_of_data.iloc[:, 0:41]
@@ -110,3 +117,25 @@ class Classification:
         for i in range(0, len(years)):
             rez.append(Result(years[i], countries[i], predictions[i]))
         return rez
+
+    def get_test_data(self):
+        test_data_list = []
+        years = self.copy_X_test['Year'].tolist()
+        countries = self.copy_X_test['Country'].tolist()
+        expected_classification = self.copy_Y_test['Clasification'].tolist()
+        for i in range(0, len(years)):
+            test_data_list.append(Result(years[i], countries[i], expected_classification[i]))
+        return test_data_list
+
+    def find_stability_statistics(self):
+        statistics = []
+        for i in range(0, 5):
+            self.separate_data()
+            self.prepare_data()
+            self.ann()
+            self.test_ann()
+            statistics.append(self.get_accuracy())
+        self.__statistics = statistics
+
+    def get_stability_statistics(self):
+        return self.__statistics

@@ -52,11 +52,14 @@ class Service:
         return sorted(list_of_years)
 
     def get_predictions(self):
-        list_of_predictions = set()
-        self.find_classification_by_value()
-        for result in self.__classification_with_names_list:
-            list_of_predictions.add(result.get_prediction())
-        return sorted(list_of_predictions)
+        list_of_predictions = []
+        # self.find_classification_by_value()
+        # for result in self.__classification_with_names_list:
+        #     list_of_predictions.add(result.get_prediction())
+        # return list_of_predictions
+        for name, member in ClassificationNames.__members__.items():
+            list_of_predictions.append(member.name)
+        return list_of_predictions
 
     def filter_and_sort(self, country, year, prediction, sort_request):
         sort_and_filter = SortAndFilterResults(self.__classification_with_names_list)
@@ -64,3 +67,19 @@ class Service:
         if len(filtered_list) == 0:
             return sort_and_filter.sort(sort_request, self.__classification_with_names_list)
         return sort_and_filter.sort(sort_request, filtered_list)
+
+    def get_test_data(self):
+        rez = set()
+        for data in UtilsForServices.get_results_with_country_name(self.__classification.get_test_data()):
+            rez.add(data)
+        return rez
+
+    def get_accuracy(self):
+        return UtilsForServices.truncate(self.__classification.get_accuracy())*100
+
+    def get_stability_statistics(self):
+        stability_list = []
+        for number in self.__classification.get_stability_statistics():
+            stability_list.append(UtilsForServices.truncate(number)*100)
+        return stability_list
+

@@ -7,23 +7,25 @@ from service.PredictionService import PredictionService
 from service.Service import Service
 from flask_bootstrap import Bootstrap
 
+from utils.UtilsForServices import UtilsForServices
+
 app = Flask(__name__)
 Bootstrap(app)
-
-# file_name = './resources/tariClasificateAvgDateAntrenament.xlsx'
-# sheet_name = 'Tari'
-# post_data_repository = PostDataRepository(file_name,sheet_name)
-# classification = Classification(post_data_repository.get_data())
-# classification.classification()
-
 service = Service()
 classification_results = service.get_classification_names()
 countries = service.get_countries()
 years = service.get_years()
 predictions = service.get_predictions()
 
+
 sheet_name = 'Tari'
 
+@app.route('/performances')
+def charts():
+    return render_template('performance.html',predictions = list(service.get_predictions()),
+                           predictions_numbers = UtilsForServices.get_list_of_numbers_of_predictions_of_same_type(predictions, service.get_classification_names()),
+                           expected_numbers = UtilsForServices.get_list_of_numbers_of_predictions_of_same_type(predictions,service.get_test_data()),
+                           accuracy = service.get_accuracy(), stability_statistics = service.get_stability_statistics())
 
 @app.route('/results')
 def results():
@@ -52,16 +54,13 @@ def about():
 def your_data():
     return render_template('your_data.html',title='Your Data')
 
-app.config["ALLOWED_IMAGE_EXTENSIONS"] = ["XLSX"]
+app.config["ALLOWED_FILE_EXTENSIONS"] = ["XLSX"]
 
 def allowed_file(filename):
-
     if not "." in filename:
         return False
-
     ext = filename.rsplit(".", 1)[1]
-
-    if ext.upper() in app.config["ALLOWED_IMAGE_EXTENSIONS"]:
+    if ext.upper() in app.config["ALLOWED_FILE_EXTENSIONS"]:
         return True
     else:
         return False
@@ -71,14 +70,14 @@ def upload_image():
     if request.method == "POST":
         if request.files:
             excel = request.files["excel"]
-            if excel != '':
+            if excel != "":
                 if allowed_file(excel.filename):
                     filename = secure_filename(excel.filename)
                     print(filename)
-                prediction_service1 = PredictionService(service.get_ml_compoment(), excel, sheet_name)
-                return render_template("your_data.html",classification_results = prediction_service1.get_predictions())
-
-    return render_template("your_data.html")
+                    prediction_service1 = PredictionService(service.get_ml_compoment(), excel, sheet_name)
+                    return render_template("your_data.html",title='Your Data',classification_results = prediction_service1.get_predictions())
+                else:
+                    return render_template('your_data.html', title='Your Data',message = "You can add only XLSX files")
 
 
 if __name__ == '__main__':

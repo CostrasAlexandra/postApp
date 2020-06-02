@@ -1,3 +1,5 @@
+import math
+
 from domain.ClassificationNames import ClassificationNames
 from domain.Result import Result
 
@@ -25,3 +27,23 @@ class UtilsForServices:
                 results_list.add(
                     Result(result.get_year(), result.get_country(), ClassificationNames.excellent.name))
         return results_list
+
+    @staticmethod
+    def __get_number_of_predictions_of_same_type(type,input_list):
+        count = 0
+        for result in input_list:
+            if result.get_prediction() == type:
+                count = count + 1
+        return count
+
+    @staticmethod
+    def get_list_of_numbers_of_predictions_of_same_type(type_list,input_list):
+        rez = []
+        for type in type_list:
+            rez.append(UtilsForServices.__get_number_of_predictions_of_same_type(type,input_list))
+        return rez
+
+    @staticmethod
+    def truncate(number):
+        stepper = 10.0 ** 3
+        return float(math.trunc(stepper * number) / stepper)
