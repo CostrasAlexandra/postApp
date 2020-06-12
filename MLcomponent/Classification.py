@@ -1,141 +1,161 @@
-from pandas import read_excel
-from sklearn.metrics import classification_report, accuracy_score
+from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 from sklearn.neural_network import MLPClassifier
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.utils import resample
 import pandas as pd
+import pickle
 
 from domain.Result import Result
+from utils.UtilsForMLcomponent import UtilsForMLcomponent
 
 
 class Classification:
-    data = any
-    results = []
-    n_samples_size = 93
-    random_state_size = 45
-    X_train = any
-    X_test = any
-    copy_X_test = any
-    y_train = any
-    y_test = any
-    rescaledX_train = any
-    rescaledY_train = any
-    rescaledX_test = any
-    rescaledY_test = any
-    prediction = any
-    copy_Y_test = []
 
     def __init__(self, data):
-        self.data = data
+        self.__data = data
         self.__mlp = any
         self.__statistics = []
+        self.__results = []
+        self.__n_samples_size = 93
+        self.__random_state_size = 45
+        self.__X_train = any
+        self.__X_test = any
+        self.__copy_X_test = any
+        self.__y_train = any
+        self.__y_test = any
+        self.__rescaledX_train = any
+        self.__rescaledY_train = any
+        self.__rescaledX_test = any
+        self.__rescaledY_test = any
+        self.__predictions = any
+        self.__copy_Y_test = []
 
-    def resample_data(self):
-        data_0 = self.data[self.data.Clasification == 0]
-        data_1 = self.data[self.data.Clasification == 1]
-        data_2 = self.data[self.data.Clasification == 2]
-        data_3 = self.data[self.data.Clasification == 3]
-        data_4 = self.data[self.data.Clasification == 4]
+    def __resample_data(self):
+        data_0 = self.__data[self.__data.Clasification == 0]
+        data_1 = self.__data[self.__data.Clasification == 1]
+        data_2 = self.__data[self.__data.Clasification == 2]
+        data_3 = self.__data[self.__data.Clasification == 3]
+        data_4 = self.__data[self.__data.Clasification == 4]
 
-        data_1_resample = resample(data_1, replace=True, n_samples=self.n_samples_size,
-                                   random_state=self.random_state_size)
-        data_2_resample = resample(data_2, replace=True, n_samples=self.n_samples_size,
-                                   random_state=self.random_state_size)
-        data_3_resample = resample(data_3, replace=True, n_samples=self.n_samples_size,
-                                   random_state=self.random_state_size)
-        data_4_resample = resample(data_4, replace=True, n_samples=self.n_samples_size,
-                                   random_state=self.random_state_size)
+        data_1_resample = resample(data_1, replace=True, n_samples=self.__n_samples_size,
+                                   random_state=self.__random_state_size)
+        data_2_resample = resample(data_2, replace=True, n_samples=self.__n_samples_size,
+                                   random_state=self.__random_state_size)
+        data_3_resample = resample(data_3, replace=True, n_samples=self.__n_samples_size,
+                                   random_state=self.__random_state_size)
+        data_4_resample = resample(data_4, replace=True, n_samples=self.__n_samples_size,
+                                   random_state=self.__random_state_size)
 
-        self.data = pd.concat([data_0, data_1_resample, data_2_resample, data_3_resample, data_4_resample])
+        self.__data = pd.concat([data_0, data_1_resample, data_2_resample, data_3_resample, data_4_resample])
 
-    def separate_data(self):
-        X = self.data.iloc[:, 0:41]
-        y = self.data.iloc[:, 42:43]
+    # separates data in train data and test data
+    def __separate_data(self):
+        x = self.__data.iloc[:, 0:41]
+        y = self.__data.iloc[:, 42:43]
 
-        self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(X, y, test_size=0.30)
-        self.copy_X_test = self.X_test.copy();
-        self.copy_Y_test = self.y_test.copy();
+        self.__X_train, self.__X_test, self.__y_train, self.__y_test = train_test_split(x, y, test_size=0.30)
+        self.__copy_X_test = self.__X_test.copy()
+        self.__copy_Y_test = self.__y_test.copy()
 
-        del self.X_test['Year']
-        del self.X_train['Year']
-        del self.X_train['Country']
-        del self.X_test['Country']
+        del self.__X_test['Year']
+        del self.__X_train['Year']
+        del self.__X_train['Country']
+        del self.__X_test['Country']
 
-    def prepare_data(self):
+    # normalize data
+    def __prepare_data(self):
         scaler = MinMaxScaler(feature_range=(0, 1))
-        self.rescaledX_train = scaler.fit_transform(self.X_train)
-        self.rescaledY_train = scaler.fit_transform(self.y_train)
-        self.rescaledX_test = scaler.fit_transform(self.X_test)
-        self.rescaledY_test = scaler.fit_transform(self.y_test)
 
-    def ann(self):
+        self.__rescaledX_train = scaler.fit_transform(self.__X_train)
+        self.__rescaledY_train = scaler.fit_transform(self.__y_train)
+        self.__rescaledX_test = scaler.fit_transform(self.__X_test)
+        self.__rescaledY_test = scaler.fit_transform(self.__y_test)
+
+    # train
+    def __ann(self):
         self.__mlp = MLPClassifier(hidden_layer_sizes=(20, 20, 20), max_iter=3000)
-        self.__mlp.fit(self.rescaledX_train, self.y_train.values.ravel())
+        self.__mlp.fit(self.__rescaledX_train, self.__y_train.values.ravel())
 
-    def test_ann(self):
-        self.predictions = self.__mlp.predict(self.rescaledX_test)
-        years = self.copy_X_test['Year'].tolist()
-        countries = self.copy_X_test['Country'].tolist()
-        self.results = self.create_result(years, countries, self.predictions)
+    # test the ann saves the result
+    def __test_ann(self):
+        self.__predictions = self.__mlp.predict(self.__rescaledX_test)
+        self.__save_result()
 
     def classification(self):
-        self.resample_data()
-        self.separate_data()
-        self.prepare_data()
-        self.find_stability_statistics()
-        self.ann()
-        self.test_ann()
+        self.__resample_data()
+        self.__separate_data()
+        self.__prepare_data()
+        self.__find_stability_statistics()
+        self.__ann()
+        self.__test_ann()
 
-    def get_results(self):
-        return self.results
+    def save_model(self):
+        self.classification()
 
-    def get_report(self):
-        return classification_report(self.y_test, self.predictions, zero_division=1)
+        filename_model = 'finalized_model.sav'
+        filename_x = 'x_test_data.pkl'
+        filename_y = 'y_test_data.pkl'
 
-    def get_accuracy(self):
-        return accuracy_score(self.y_test, self.predictions)
+        pickle.dump(self.__mlp, open(filename_model, 'wb'))
+        pickle.dump(self.__rescaledX_test, open(filename_x, 'wb'))
+        pickle.dump(self.__y_test, open(filename_y, 'wb'))
+        self.__get_test_data()
 
-    def predict(self, list_of_data):
-        x_input = list_of_data.iloc[:, 0:41]
-        copy_x_input = list_of_data.iloc[:, 0:41]
+    def __save_result(self):
+        years = self.__copy_X_test['Year'].tolist()
+        countries = self.__copy_X_test['Country'].tolist()
+        real_output = self.__copy_Y_test['Clasification'].tolist()
+        self.__results = UtilsForMLcomponent.create_result(years, countries, self.__predictions, real_output)
 
-        del x_input['Year']
-        del x_input['Country']
+        filename_results = 'results.pkl'
+        pickle.dump(self.__rescaledX_test, open(filename_results, 'wb'))
 
-        scaler = MinMaxScaler(feature_range=(0, 1))
-        rescaled_x_input = scaler.fit_transform(x_input)
+    def __get_accuracy(self):
+        return accuracy_score(self.__y_test, self.__predictions)
 
-        predict = self.__mlp.predict(rescaled_x_input)
-        years = copy_x_input['Year'].tolist()
-        countries = copy_x_input['Country'].tolist()
-
-        return self.create_result(years, countries, predict)
-
-    def create_result(self, years, countries, predictions):
-        rez = []
-        for i in range(0, len(years)):
-            rez.append(Result(years[i], countries[i], predictions[i]))
-        return rez
-
-    def get_test_data(self):
+    # saves the dataset used for testing
+    def __get_test_data(self):
         test_data_list = []
-        years = self.copy_X_test['Year'].tolist()
-        countries = self.copy_X_test['Country'].tolist()
-        expected_classification = self.copy_Y_test['Clasification'].tolist()
-        for i in range(0, len(years)):
-            test_data_list.append(Result(years[i], countries[i], expected_classification[i]))
-        return test_data_list
+        years = self.__copy_X_test['Year'].tolist()
+        countries = self.__copy_X_test['Country'].tolist()
+        expected_classification = self.__copy_Y_test['Clasification'].tolist()
 
-    def find_stability_statistics(self):
+        for i in range(0, len(years)):
+            test_data_list.append(Result(years[i], countries[i],[], expected_classification[i]))
+
+        filename_test_data ="get_test_data.pkl"
+        pickle.dump(test_data_list, open(filename_test_data, 'wb'))
+
+    # saves the accuracies for 10 trainings
+    def __find_stability_statistics(self):
         statistics = []
-        for i in range(0, 5):
-            self.separate_data()
-            self.prepare_data()
-            self.ann()
-            self.test_ann()
-            statistics.append(self.get_accuracy())
+
+        for i in range(0, 10):
+            self.__separate_data()
+            self.__prepare_data()
+            self.__ann()
+            self.__test_ann()
+            statistics.append(self.__get_accuracy())
         self.__statistics = statistics
 
-    def get_stability_statistics(self):
-        return self.__statistics
+        filename_stability_statistics ="stability_statistic.pkl"
+        pickle.dump(self.__statistics, open(filename_stability_statistics, 'wb'))
+
+
+
+
+# file_name = 'C:/Users/Alexandra/PycharmProjects/appServer/resources/tariClasificateAvgDateAntrenament.xlsx'
+# sheet_name = 'Tari'
+# r =PostDataRepository(file_name,sheet_name)
+# cl = Classification(r.get_data())
+# cl.save_model()
+# m = pickle.load((open('finalized_model.sav','rb')))
+# x = pickle.load((open('x_test_data.pkl','rb')))
+# y = pickle.load((open('y_test_data.pkl','rb')))
+# print("ffff")
+
+
+
+
+

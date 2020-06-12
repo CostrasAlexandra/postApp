@@ -46,10 +46,11 @@
             {% for classfication_result in classification_results %}
                 <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
                     <!-- Card-->
-                    <div class="card border-light mb-3" style="max-width: 18rem;">
+                    <div class="card border-info mb-3" style="max-width: 18rem;">
                         <div class="card-body">
                             <h5 class="card-title">{{ classfication_result.year_and_country_to_string() }}</h5>
                             <p class="card-text">Result: {{ classfication_result.get_prediction() }}</p>
+                            <p class="card-text">Expected: {{ classfication_result.get_real_output() }}</p>
                         </div>
                     </div>
                 </div>
