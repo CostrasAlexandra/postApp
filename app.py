@@ -80,6 +80,7 @@ def upload_image():
                     return render_template('your_data.html', title='Your Data', message="You can add only XLSX files", alert ="Error")
 
 
+
 app.config["ALLOWED_FILE_EXTENSIONS"] = ["XLSX"]
 
 

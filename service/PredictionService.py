@@ -28,6 +28,3 @@ class PredictionService:
             results.append(Result(years[i],countries[i],prediction[i],real_output[i]))
         return UtilsForServices.get_results_with_country_name(results)
 
-
-
-

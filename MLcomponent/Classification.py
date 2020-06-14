@@ -145,16 +145,6 @@ class Classification:
 
 
 
-# file_name = 'C:/Users/Alexandra/PycharmProjects/appServer/resources/tariClasificateAvgDateAntrenament.xlsx'
-# sheet_name = 'Tari'
-# r =PostDataRepository(file_name,sheet_name)
-# cl = Classification(r.get_data())
-# cl.save_model()
-# m = pickle.load((open('finalized_model.sav','rb')))
-# x = pickle.load((open('x_test_data.pkl','rb')))
-# y = pickle.load((open('y_test_data.pkl','rb')))
-# print("ffff")
-
 
 
 

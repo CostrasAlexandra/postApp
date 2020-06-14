@@ -11,7 +11,7 @@ from utils.UtilsForServices import UtilsForServices
 
 class Service:
     def __init__(self):
-        self.__file_name = './resources/tariClasificateAvgDateAntrenament.xlsx'
+        self.__file_name = './resources/resources/set1.xlsx'
         self.__sheet_name = 'Tari'
         self.__post_data_repository = PostDataRepository(self.__file_name,self.__sheet_name)
         self.__path_name = './MLcomponent/'
