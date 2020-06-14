@@ -3,7 +3,7 @@ from domain.Result import Result
 
 class SortAndFilterResults:
 
-    def __init__(self,classification_list):
+    def __init__(self, classification_list):
         self.classification_with_names_list = classification_list
 
     def __filter_by_country(self, country):
@@ -25,7 +25,7 @@ class SortAndFilterResults:
         for result in self.classification_with_names_list:
             if result.get_year() == year and result.get_country() == country:
                 return [result]
-        return [Result(0, "Not Found", "Not Found")]
+        return [Result(0, "Not Found", "Not Found", "Not Found")]
 
     def __filter_by_country_and_prediction(self, country, prediction):
         list_of_results = list()
@@ -33,7 +33,7 @@ class SortAndFilterResults:
             if result.get_prediction() == prediction and result.get_country() == country:
                 list_of_results.append(result)
         if len(list_of_results) == 0:
-            return [Result(0, "Not Found", "Not Found")]
+            return [Result(0, "Not Found", "Not Found", "Not Found")]
         else:
             return list_of_results
 
@@ -43,7 +43,7 @@ class SortAndFilterResults:
             if result.get_prediction() == prediction and result.get_year() == year:
                 list_of_results.append(result)
         if len(list_of_results) == 0:
-            return [Result(0, "Not Found", "Not Found")]
+            return [Result(0, "Not Found", "Not Found", "Not Found")]
         else:
             return list_of_results
 
@@ -64,7 +64,7 @@ class SortAndFilterResults:
         for result in self.classification_with_names_list:
             if result.get_year() == year and result.get_country() == country and result.get_prediction() == prediction:
                 return [result]
-        return [Result(0, "Not Found", "Not Found")]
+        return [Result(0, "Not Found", "Not Found", "Not Found")]
 
     def filter(self, country, year, prediction):
         filtered_list = set()

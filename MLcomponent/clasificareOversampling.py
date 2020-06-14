@@ -1,9 +1,5 @@
 import numpy
-import sklearn
-
 from pandas import read_excel
-# find your sheet name at the bottom left of your excel file and assign
-# it to my_sheet
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.utils import resample
 import pandas as pd
