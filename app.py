@@ -14,6 +14,7 @@ classification_results = service.get_classification_names()
 countries = service.get_countries()
 years = service.get_years()
 predictions = service.get_predictions()
+list_of_your_data_results = []
 
 
 @app.route('/performances')
@@ -63,6 +64,7 @@ def your_data():
 
 sheet_name = 'Tari'
 
+prediction_service1 = PredictionService(None,None,None)
 
 @app.route("/your_data", methods=["GET", "POST"])
 def upload_image():
@@ -73,11 +75,23 @@ def upload_image():
                 if allowed_file(excel.filename):
                     filename = secure_filename(excel.filename)
                     print(filename)
+                    global prediction_service1
                     prediction_service1 = PredictionService(service.get_ml_compoment(), excel, sheet_name)
+
                     return render_template("your_data.html", title='Your Data',
-                                           classification_results=prediction_service1.get_predictions())
+                                           classification_results=prediction_service1.get_predictions(), countries=prediction_service1.get_countries(),
+                               years=prediction_service1.get_years(), predictions=prediction_service1.get_predictions_names())
                 else:
                     return render_template('your_data.html', title='Your Data', message="You can add only XLSX files", alert ="Error")
+        if request.form["filter"] == "filter":
+            print("filter")
+            country = request.form['country']
+            year = request.form['year']
+            prediction = request.form['prediction']
+            sort_request = request.form['sort_by']
+            filtered_list = prediction_service1.filter_and_sort(country, year, prediction, sort_request)
+            return render_template('your_data.html', classification_results=filtered_list, countries=prediction_service1.get_countries(),
+                                   years=prediction_service1.get_years(), predictions=prediction_service1.get_predictions_names())
 
 
 
